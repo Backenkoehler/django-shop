@@ -35,8 +35,8 @@
                 {% for extra_price_field in form.instance.extra_price_fields %}
                   <tr>
                     <td colspan="2">&nbsp;</td>
-                    <td>{{ extra_price_field.0 }}</td>
-                    <td>{{ extra_price_field.1 }}</td>
+                    <td>{{ extra_price_field.label }}</td>
+                    <td>{{ extra_price_field.value }}</td>
                   </tr>
                 {% endfor %}
                 <tr><td colspan="2">&nbsp;</td><td>{% trans "Line Total" %}:</td><td>{{ form.instance.line_total }}</td></tr>
@@ -49,8 +49,8 @@
             {% for extra_price_field in cart.extra_price_fields %}
               <tr>
                 <td colspan="2">&nbsp;</td>
-                <td>{{ extra_price_field.0 }}</td>
-                <td>{{ extra_price_field.1 }}</td>
+                <td>{{ extra_price_field.label }}</td>
+                <td>{{ extra_price_field.value }}</td>
               </tr>
             {% endfor %}
             <tr><td colspan="2">&nbsp;</td><td><b>{% trans "Cart Total" %}</b></td><td><b>{{cart.total_price}}</b></td></tr>

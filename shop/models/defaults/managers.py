@@ -99,11 +99,12 @@ class OrderManager(models.Manager):
         order.save()
 
         # Let's serialize all the extra price arguments in DB
-        for label, value in cart.extra_price_fields:
+        for extra_entry in cart.extra_price_fields:
             eoi = ExtraOrderPriceField()
             eoi.order = order
-            eoi.label = str(label)
-            eoi.value = value
+            eoi.label = str(extra_entry.label)
+            eoi.value = extra_entry.value
+            eoi.data = extra_entry.data
             eoi.save()
 
         # There, now move on to the order items.
@@ -121,12 +122,13 @@ class OrderManager(models.Manager):
             order_item.line_subtotal = item.line_subtotal
             order_item.save()
             # For each order item, we save the extra_price_fields to DB
-            for label, value in item.extra_price_fields:
+            for extra_entry in item.extra_price_fields:
                 eoi = ExtraOrderItemPriceField()
                 eoi.order_item = order_item
                 # Force unicode, in case it has àö...
-                eoi.label = unicode(label)
-                eoi.value = value
+                eoi.label = unicode(extra_entry.label)
+                eoi.value = extra_entry.value
+                eoi.data = extra_entry.data
                 eoi.save()
 
         processing.send(self.model, order=order, cart=cart)

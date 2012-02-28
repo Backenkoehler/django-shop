@@ -112,7 +112,7 @@ class TenPercentPerItemTaxModifierTestCase(TestCase):
         modifier = TenPercentPerItemTaxModifier()
         item = self.MockItem()
         field = modifier.get_extra_cart_item_price_field(item)
-        self.assertTrue(field[1] == Decimal('10'))
+        self.assertTrue(field.value == Decimal('10'))
 
     def test_tax_amount_is_correct_after_modifier(self):
         modifier = TenPercentPerItemTaxModifier()
@@ -121,4 +121,4 @@ class TenPercentPerItemTaxModifierTestCase(TestCase):
         item.extra_price_fields.append(previous_option)
         item.current_total = item.current_total + previous_option[1]
         field = modifier.get_extra_cart_item_price_field(item)
-        self.assertTrue(field[1] == Decimal('11'))
+        self.assertTrue(field.value == Decimal('11'))

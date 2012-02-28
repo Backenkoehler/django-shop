@@ -267,7 +267,7 @@ class BaseCartItem(models.Model):
         # That will hold extra fields to display to the user
         # (ex. taxes, discount)
         super(BaseCartItem, self).__init__(*args, **kwargs)
-        self.extra_price_fields = []  # list of tuples (label, value)
+        self.extra_price_fields = []  # list of ExtraEntryLine's
         # These must not be stored, since their components can be changed
         # between sessions / logins etc...
         self.line_subtotal = Decimal('0.0')
