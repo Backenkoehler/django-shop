@@ -1,6 +1,6 @@
 #-*- coding: utf-8 -*-
 from decimal import Decimal
-from shop.cart.cart_modifiers_base import BaseCartModifier
+from shop.cart.cart_modifiers_base import BaseCartModifier, ExtraEntryLine
 
 
 class BulkRebateModifier(BaseCartModifier):
@@ -16,8 +16,8 @@ class BulkRebateModifier(BaseCartModifier):
         """
         REBATE_PERCENTAGE = Decimal('10')
         NUMBER_OF_ITEMS_TO_TRIGGER_REBATE = 5
-        result_tuple = None
+        result = None
         if cart_item.quantity >= NUMBER_OF_ITEMS_TO_TRIGGER_REBATE:
             rebate = (REBATE_PERCENTAGE / 100) * cart_item.line_subtotal
-            result_tuple = ('Rebate', -rebate)
-        return result_tuple  # Returning None is ok
+            result = ExtraEntryLine(label='Rebate', value=-rebate)
+        return result  # Returning None is ok

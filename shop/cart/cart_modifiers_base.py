@@ -1,6 +1,27 @@
 # -*- coding: utf-8 -*-
 
 
+class ExtraEntryLine(object):
+    """
+    This object holds all the data which is added to an item as extra line when
+    the cart is transformed into an order.
+    """
+    def __init__(self, label, value, data=None):
+        """
+        @param label: A descriptive text about this line useful for the administrator.
+        @param value: The decimal should be the amount that should get added to
+            the current subtotal. It can be a negative value.
+        The price difference for this item.
+        @param data: A dictionary created by the modifier to store custom data.
+        TODO: add modifier_classpath: The full qualified class path of the modifier
+            which created this extra entry line. Useful when reprocessing orders,
+            so that we know who is able to interpret the ``data`` field.
+        """
+        self.label = label
+        self.value = value
+        self.data = data
+
+
 class BaseCartModifier(object):
     """
     Price modifiers are the cart's counterpart to backends.
@@ -72,7 +93,7 @@ class BaseCartModifier(object):
         """
         field = self.get_extra_cart_item_price_field(cart_item)
         if field != None:
-            price = field[1]
+            price = field.value
             cart_item.current_total = cart_item.current_total + price
             cart_item.extra_price_fields.append(field)
         return cart_item
@@ -95,7 +116,7 @@ class BaseCartModifier(object):
         """
         field = self.get_extra_cart_price_field(cart)
         if field != None:
-            price = field[1]
+            price = field.value
             cart.current_total = cart.current_total + price
             cart.extra_price_fields.append(field)
         return cart
@@ -106,22 +127,22 @@ class BaseCartModifier(object):
 
     def get_extra_cart_item_price_field(self, cart_item):
         """
-        Get an extra price field tuple for the current cart_item:
+        Get an extra item line for the current cart_item:
 
-        This allows to modify the price easily, simply return a
-        ('Label', Decimal('amount')) from an override. This is expected to be
-        a tuple. The decimal should be the amount that should get added to the
-        current subtotal. It can be a negative value.
+        This allows to modify the price easily, simply return an object of
+        type ExtraEntryLine or None if no extra line shall be added.
 
         In case your modifier is based on the current price (for example in
         order to compute value added tax for this cart item only) your
         override can access that price via ``cart_item.current_total``.
 
         A tax modifier would do something like this:
-        >>> return ('taxes', Decimal(9))
+        >>> data = { 'foo': 'bar' }
+        >>> return ExtraEntryLine(label='taxes', value=Decimal(9), data=data)
 
         And a rebate modifier would do something along the lines of:
-        >>> return ('rebate', Decimal(-9))
+        >>> data = { 'foo': 'bar' }
+        >>> return ExtraEntryLine(label='rebate', value=Decimal(-9), data=data)
 
         More examples can be found in shop.cart.modifiers.*
         """
@@ -129,18 +150,17 @@ class BaseCartModifier(object):
 
     def get_extra_cart_price_field(self, cart):
         """
-        Get an extra price field tuple for the current cart:
+        Get an extra line for the current cart:
 
-        This allows to modify the price easily, simply return a
-        ('Label', Decimal('amount')) from an override. This is expected to be
-        a tuple. The decimal should be the amount that should get added to the
-        current subtotal. It can be a negative value.
+        This allows to modify the price easily, simply return an object of
+        type ExtraEntryLine or None if no extra line shall be added.
 
         In case your modifier is based on the current price (for example in
         order to compute value added tax for the whole current price) your
         override can access that price via ``cart.current_total``. That is the
         subtotal, updated with all cart modifiers so far)
 
-        >>> return ('Taxes total', 19.00)
+        >>> data = { 'foo': 'bar' }
+        >>> return ExtraEntryLine(label='Taxes total', Decimal(19.00), data=data)
         """
         return None

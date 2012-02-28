@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 from decimal import Decimal
-from shop.cart.cart_modifiers_base import BaseCartModifier
+from shop.cart.cart_modifiers_base import BaseCartModifier, ExtraEntryLine
 
 
 class TenPercentGlobalTaxModifier(BaseCartModifier):
@@ -19,8 +19,7 @@ class TenPercentGlobalTaxModifier(BaseCartModifier):
         Add a field on cart.extra_price_fields:
         """
         taxes = (self.TAX_PERCENTAGE / 100) * cart.current_total
-        result_tuple = ('Taxes total', taxes)
-        return result_tuple
+        return ExtraEntryLine(label='Taxes total', value=taxes)
 
 
 class TenPercentPerItemTaxModifier(BaseCartModifier):
@@ -37,5 +36,4 @@ class TenPercentPerItemTaxModifier(BaseCartModifier):
     def get_extra_cart_item_price_field(self, cart_item):
         tax_amount = (self.TAX_PERCENTAGE / 100) * cart_item.current_total
 
-        result_tuple = ('Taxes (10%)', tax_amount)
-        return result_tuple
+        return ExtraEntryLine(label='Taxes (10%)', value=tax_amount)

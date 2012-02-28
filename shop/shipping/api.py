@@ -1,8 +1,7 @@
 # -*- coding: utf-8 -*-
 from shop.shop_api import ShopAPI
 from shop.order_signals import payment_selection
-from shop.models.ordermodel import ExtraOrderPriceField
-from shop.models.ordermodel import Order
+from shop.models.ordermodel import Order, ExtraOrderPriceField
 from django.shortcuts import redirect
 
 
@@ -44,7 +43,7 @@ class ShippingAPI(ShopAPI):
 
         else:
             # In this case, there was no shipping cost already associated with
-            # the order - let's simply create a new one (theat should be the
+            # the order - let's simply create a new one (that should be the
             # default case)
             ExtraOrderPriceField.objects.create(order=order,
                                                 label=label,
