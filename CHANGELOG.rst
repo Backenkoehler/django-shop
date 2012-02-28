@@ -1,3 +1,10 @@
+additional-Order-Item-ExtraLine
+===============================
+
+* In cart_modifiers, replaced tuple (label, value) against a new structure
+  ``ExtraEntryLine`` which contains an extra field ``data`` to hold custom data
+  to be forwarded into the template views for orders and invoices.
+
 Version 0.0.14
 ==============
 
