@@ -1,3 +1,11 @@
+DEV
+===
+
+* For each product added to the Cart and Order, optional product variations can
+  be stored together in the database. Variations are stored as serialized
+  dictionaries. This makes it easier to implement customized product variations
+  and makes it easier to add features, such as wishlists, comparison carts, etc.
+
 Version 0.0.14
 ==============
 
