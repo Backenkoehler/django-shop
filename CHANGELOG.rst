@@ -9,6 +9,8 @@ DEV
   in Django admin view.
 * Added this newly created mixin class to OrderAdmin, so that all price fields
   are handled with the correct localization.
+* shop.util.loader.get_model_string now can be used to load models outside
+  the shop's namespace.
 
 Version 0.0.14
 ==============
