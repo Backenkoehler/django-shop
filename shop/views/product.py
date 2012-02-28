@@ -20,6 +20,13 @@ class ProductDetailView(ShopDetailView):
             ret.append(self.generic_template)
         return ret
 
+    def post(self, *args, **kwargs):
+        """
+        Dummy function to enable seamless view mixins for product detail views.
+        TODO: if POST data contains 'add_to_cart' then add item to cart.
+        """
+        pass
+
     def get_variation(self):
         """
         Dummy function to enable seamless view mixins.
