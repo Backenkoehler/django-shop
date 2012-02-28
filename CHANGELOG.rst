@@ -5,6 +5,10 @@ DEV
   be stored together in the database. Variations are stored as serialized
   dictionaries. This makes it easier to implement customized product variations
   and makes it easier to add features, such as wishlists, comparison carts, etc.
+* Added a mixin class which helps to localize model fields of type DecimalField
+  in Django admin view.
+* Added this newly created mixin class to OrderAdmin, so that all price fields
+  are handled with the correct localization.
 
 Version 0.0.14
 ==============
