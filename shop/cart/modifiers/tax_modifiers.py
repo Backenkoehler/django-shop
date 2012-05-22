@@ -12,11 +12,12 @@ class TenPercentGlobalTaxModifier(BaseCartModifier):
     use a more dynamic configuration system, such as settings or models to
     hold the tax values...
     """
+    modifier_name = 'ten_percent_global_tax'
     TAX_PERCENTAGE = Decimal('10')
 
-    def get_extra_cart_price_field(self, cart):
+    def get_extra_entry_line(self, cart):
         """
-        Add a field on cart.extra_price_fields:
+        Add a field on cart.extra_entry_line:
         """
         taxes = (self.TAX_PERCENTAGE / 100) * cart.current_total
         return ExtraEntryLine(label='Taxes total', value=taxes)
@@ -31,6 +32,7 @@ class TenPercentPerItemTaxModifier(BaseCartModifier):
     Some countries insist that taxes are calculated after/before discounts, and
     so forth
     """
+    modifier_name = 'ten_percent_per_item_tax'
     TAX_PERCENTAGE = Decimal("10")
 
     def get_extra_cart_item_price_field(self, cart_item):

@@ -5,7 +5,7 @@ from django.contrib.auth.models import User
 from django.core.exceptions import ImproperlyConfigured
 from django.test.testcases import TestCase
 from shop.cart import modifiers_pool
-from shop.cart.cart_modifiers_base import BaseCartModifier
+from shop.cart.cart_modifiers_base import BaseCartModifier, ExtraEntryLine
 from shop.cart.modifiers.tax_modifiers import TenPercentPerItemTaxModifier
 from shop.cart.modifiers_pool import cart_modifiers_pool
 from shop.models.cartmodel import Cart
@@ -106,19 +106,19 @@ class TenPercentPerItemTaxModifierTestCase(TestCase):
         def __init__(self):
             self.line_subtotal = 100  # Makes testing easy
             self.current_total = self.line_subtotal
-            self.extra_price_fields = []
+            self.extra_entry_lines = {}
 
     def test_tax_amount_is_correct(self):
         modifier = TenPercentPerItemTaxModifier()
         item = self.MockItem()
-        field = modifier.get_extra_cart_item_price_field(item)
+        field = modifier.get_extra_cart_item_line(item)
         self.assertTrue(field.value == Decimal('10'))
 
     def test_tax_amount_is_correct_after_modifier(self):
         modifier = TenPercentPerItemTaxModifier()
         item = self.MockItem()
-        previous_option = ('Some option', 10)
-        item.extra_price_fields.append(previous_option)
+        previous_option = ExtraEntryLine(label='Some option', value=Decimal('10'))
+        item.extra_entry_lines['test'] = previous_option
         item.current_total = item.current_total + previous_option[1]
-        field = modifier.get_extra_cart_item_price_field(item)
+        field = modifier.get_extra_cart_item_line(item)
         self.assertTrue(field.value == Decimal('11'))

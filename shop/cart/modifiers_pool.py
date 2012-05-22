@@ -21,6 +21,7 @@ class CartModifiersPool(object):
         Heavily inspired by django.core.handlers.base...
         """
         result = []
+        modifier_names = []
         if not getattr(settings, 'SHOP_CART_MODIFIERS', None):
             return result
 
@@ -42,6 +43,24 @@ class CartModifiersPool(object):
                     'Price modifier module "%s" does not define a "%s" class' %
                         (mod_module, mod_classname))
             mod_instance = mod_class()
+            if not hasattr(mod_instance, 'modifier_name'):
+                raise exceptions.ImproperlyConfigured(
+                    'The price modifier class "%s" does not define any "modifier_name"' %
+                        mod_classname
+                )
+            class_identifier = getattr(mod_instance, 'modifier_name')
+            if type(class_identifier) != str:
+                raise exceptions.ImproperlyConfigured(
+                    'The price modifier class "%s" contains an invalid modifier_name' %
+                        mod_classname
+                )
+            if class_identifier in modifier_names:
+                raise exceptions.ImproperlyConfigured(
+                    'The price modifier class "%s" contains modifier_name "%s" '
+                    'which is used by another modifier class' %
+                    (mod_classname, class_identifier)
+                )
+            modifier_names.append(class_identifier)
             result.append(mod_instance)
 
         return result

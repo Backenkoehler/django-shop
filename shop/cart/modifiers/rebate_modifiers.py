@@ -4,15 +4,14 @@ from shop.cart.cart_modifiers_base import BaseCartModifier, ExtraEntryLine
 
 
 class BulkRebateModifier(BaseCartModifier):
+    modifier_name = 'bulk_rabate'
 
-    def get_extra_cart_item_price_field(self, cart_item):
+    def get_extra_cart_item_line(self, cart_item):
         """
         Add a rebate to a line item depending on the quantity ordered:
 
         This serves as an example mass rebate modifier: if you buy more than
         5 items of the same kind, you get 10% off the bunch
-
-        >>> cart_item.extra_price_fields.update({'Rebate': Decimal('10.0')})
         """
         REBATE_PERCENTAGE = Decimal('10')
         NUMBER_OF_ITEMS_TO_TRIGGER_REBATE = 5

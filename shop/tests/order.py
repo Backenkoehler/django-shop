@@ -264,7 +264,7 @@ class OrderConversionTestCase(TestCase):
 
             # Assert that there are as many extra_cart_price_fields than there
             # are extra order price fields
-            e_cart_fields = self.cart.extra_price_fields
+            e_cart_fields = self.cart.extra_entry_lines
             e_order_fields = ExtraOrderPriceField.objects.filter(order=o)
             self.assertEqual(len(e_cart_fields), len(e_order_fields))
 

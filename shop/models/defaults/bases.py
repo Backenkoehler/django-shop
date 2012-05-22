@@ -87,7 +87,7 @@ class BaseCart(models.Model):
         self.subtotal_price = Decimal('0.0')
         self.total_price = Decimal('0.0')
         self.current_total = Decimal('0.0')  # used by cart modifiers
-        self.extra_price_fields = []  # List of tuples (label, value)
+        self.extra_entry_lines = {}  # dict of ExtraEntryLine objects
         self._updated_cart_items = None
 
     def add_product(self, product, quantity=1, variation=None):
@@ -174,7 +174,7 @@ class BaseCart(models.Model):
         products = Product.objects.filter(id__in=product_ids)
         products_dict = dict([(p.id, p) for p in products])
 
-        self.extra_price_fields = []  # Reset the price fields
+        self.extra_entry_lines = {}  # Reset the price fields
         self.subtotal_price = Decimal('0.0')  # Reset the subtotal
 
         # This will hold extra information that cart modifiers might want to
@@ -246,7 +246,7 @@ class BaseCartItem(models.Model):
         # That will hold extra fields to display to the user
         # (ex. taxes, discount)
         super(BaseCartItem, self).__init__(*args, **kwargs)
-        self.extra_price_fields = []  # list of ExtraEntryLine's
+        self.extra_entry_lines = {}  # dict of ExtraEntryLine objects
         # These must not be stored, since their components can be changed
         # between sessions / logins etc...
         self.line_subtotal = Decimal('0.0')
@@ -254,7 +254,7 @@ class BaseCartItem(models.Model):
         self.current_total = Decimal('0.0')  # Used by cart modifiers
 
     def update(self, state):
-        self.extra_price_fields = []  # Reset the price fields
+        self.extra_entry_lines = {}  # Reset extra entry lines
         self.line_subtotal = self.product.get_price() * self.quantity
         self.current_total = self.line_subtotal
 

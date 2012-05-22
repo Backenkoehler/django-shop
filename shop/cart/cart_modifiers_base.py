@@ -8,14 +8,11 @@ class ExtraEntryLine(object):
     """
     def __init__(self, label, value, data=None):
         """
-        @param label: A descriptive text about this line useful for the administrator.
+        @param label: A descriptive text about this line.
         @param value: The decimal should be the amount that should get added to
             the current subtotal. It can be a negative value.
         The price difference for this item.
         @param data: A dictionary created by the modifier to store custom data.
-        TODO: add modifier_classpath: The full qualified class path of the modifier
-            which created this extra entry line. Useful when reprocessing orders,
-            so that we know who is able to interpret the ``data`` field.
         """
         self.label = label
         self.value = value
@@ -37,16 +34,18 @@ class BaseCartModifier(object):
         relations and quantities are available
     2. process_cart_item: Called for each cart_item in the cart. The current
        total for this item is available as current_total
-    (2.a). get_extra_cart_item_price_field: A helper method provided for simple
-           use cases. It returns a tuple of (description, value) to add to the
-           current cart_item
+    (2.a). get_extra_entry_line: A helper method provided for simple
+           use cases. It returns an object of type ExtraEntryLine containing
+           extra information about the current cart_item. It is OK to return
+           None here.
     3. process_cart: Called once for the whole cart. Here, all fields relative
        to cart items are filled, as well as the cart subtotal. The current
        total is available as Cart.current_total (it includes modifications from
        previous calls to this method, in other modifiers)
-    (3.a). get_extra_cart_price_field: A helper method for simple use cases. It
-           returns a tuple of (description, value) to add to the current
-           cart_item
+    (3.a). get_extra_entry_line: A helper method for simple use cases. It
+           shall return an object of type ExtraEntryLine containing extra
+           information about the current cart It is OK to return
+           None here.
     4. post_process_cart: all totals are up-to-date, the cart is ready to be
        displayed. Any change you make here must be consistent!
     """
@@ -91,11 +90,11 @@ class BaseCartModifier(object):
         The state parameter is only used to let implementations store temporary
         information to pass between cart_item_modifers and cart_modifiers
         """
-        field = self.get_extra_cart_item_price_field(cart_item)
+        field = self.get_extra_cart_item_line(cart_item, state)
         if field != None:
             price = field.value
             cart_item.current_total = cart_item.current_total + price
-            cart_item.extra_price_fields.append(field)
+            cart_item.extra_entry_lines[self.modifier_name] = field
         return cart_item
 
     def process_cart(self, cart, state):
@@ -114,18 +113,18 @@ class BaseCartModifier(object):
         The state parameter is only used to let implementations store temporary
         information to pass between cart_item_modifers and cart_modifiers
         """
-        field = self.get_extra_cart_price_field(cart)
+        field = self.get_extra_entry_line(cart, state)
         if field != None:
             price = field.value
             cart.current_total = cart.current_total + price
-            cart.extra_price_fields.append(field)
+            cart.extra_entry_lines[self.modifier_name] = field
         return cart
 
     #==========================================================================
     # Simple methods
     #==========================================================================
 
-    def get_extra_cart_item_price_field(self, cart_item):
+    def get_extra_cart_item_line(self, cart_item, state):
         """
         Get an extra item line for the current cart_item:
 
@@ -148,7 +147,7 @@ class BaseCartModifier(object):
         """
         return None  # Does nothing by default
 
-    def get_extra_cart_price_field(self, cart):
+    def get_extra_entry_line(self, cart, state):
         """
         Get an extra line for the current cart:
 

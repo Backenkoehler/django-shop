@@ -32,11 +32,11 @@
                       {{ field }}</td>
                   <td>{{ form.instance.line_subtotal }}</td>
                 </tr>
-                {% for extra_price_field in form.instance.extra_price_fields %}
+                {% for key, extra_entry_line in form.instance.extra_entry_lines.items %}
                   <tr>
                     <td colspan="2">&nbsp;</td>
-                    <td>{{ extra_price_field.label }}</td>
-                    <td>{{ extra_price_field.value }}</td>
+                    <td>{{ extra_entry_line.label }}</td>
+                    <td>{{ extra_entry_line.value }}</td>
                   </tr>
                 {% endfor %}
                 <tr><td colspan="2">&nbsp;</td><td>{% trans "Line Total" %}:</td><td>{{ form.instance.line_total }}</td></tr>
@@ -46,11 +46,11 @@
 
           <tfoot>
             <tr><td colspan="2">&nbsp;</td><td>{% trans "Cart Subtotal" %}</td><td>{{cart.subtotal_price}}</td></tr>
-            {% for extra_price_field in cart.extra_price_fields %}
+            {% for key, extra_entry_line in cart.extra_entry_lines.items %}
               <tr>
                 <td colspan="2">&nbsp;</td>
-                <td>{{ extra_price_field.label }}</td>
-                <td>{{ extra_price_field.value }}</td>
+                <td>{{ extra_entry_line.label }}</td>
+                <td>{{ extra_entry_line.value }}</td>
               </tr>
             {% endfor %}
             <tr><td colspan="2">&nbsp;</td><td><b>{% trans "Cart Total" %}</b></td><td><b>{{cart.total_price}}</b></td></tr>
