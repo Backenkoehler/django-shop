@@ -15,7 +15,7 @@ class TenPercentGlobalTaxModifier(BaseCartModifier):
     modifier_name = 'ten_percent_global_tax'
     TAX_PERCENTAGE = Decimal('10')
 
-    def get_extra_entry_line(self, cart):
+    def get_extra_cart_line(self, cart):
         """
         Add a field on cart.extra_entry_line:
         """

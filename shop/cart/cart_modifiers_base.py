@@ -34,7 +34,7 @@ class BaseCartModifier(object):
         relations and quantities are available
     2. process_cart_item: Called for each cart_item in the cart. The current
        total for this item is available as current_total
-    (2.a). get_extra_entry_line: A helper method provided for simple
+    (2.a). get_extra_cart_line: A helper method provided for simple
            use cases. It returns an object of type ExtraEntryLine containing
            extra information about the current cart_item. It is OK to return
            None here.
@@ -42,7 +42,7 @@ class BaseCartModifier(object):
        to cart items are filled, as well as the cart subtotal. The current
        total is available as Cart.current_total (it includes modifications from
        previous calls to this method, in other modifiers)
-    (3.a). get_extra_entry_line: A helper method for simple use cases. It
+    (3.a). get_extra_cart_line: A helper method for simple use cases. It
            shall return an object of type ExtraEntryLine containing extra
            information about the current cart It is OK to return
            None here.
@@ -113,7 +113,7 @@ class BaseCartModifier(object):
         The state parameter is only used to let implementations store temporary
         information to pass between cart_item_modifers and cart_modifiers
         """
-        field = self.get_extra_entry_line(cart, state)
+        field = self.get_extra_cart_line(cart, state)
         if field != None:
             price = field.value
             cart.current_total = cart.current_total + price
@@ -147,7 +147,7 @@ class BaseCartModifier(object):
         """
         return None  # Does nothing by default
 
-    def get_extra_entry_line(self, cart, state):
+    def get_extra_cart_line(self, cart, state):
         """
         Get an extra line for the current cart:
 
