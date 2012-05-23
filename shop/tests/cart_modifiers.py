@@ -13,10 +13,12 @@ from shop.models.productmodel import Product
 from shop.tests.utils.context_managers import SettingsOverride
 
 
-class CarModifierUsingStatePassing(BaseCartModifier):
+class CartModifierUsingStatePassing(BaseCartModifier):
     """
     A test cart modifier that uses the state variable to pass things around
     """
+    modifier_name = 'cart_using_state_passing'
+
     def process_cart_item(self, cart_item, state):
         state['TEST'] = 'VALID'
         return cart_item
@@ -30,6 +32,7 @@ class CarModifierUsingStatePassing(BaseCartModifier):
 class CartModifiersTestCase(TestCase):
 
     PRODUCT_PRICE = Decimal('100')
+    modifier_name = 'cart_test_case'
 
     def setUp(self):
         cart_modifiers_pool.USE_CACHE = False
@@ -92,7 +95,7 @@ class CartModifiersTestCase(TestCase):
             self.assertTrue(raised)
 
     def test_state_is_passed_around_properly(self):
-        MODIFIERS = ['shop.tests.cart_modifiers.CarModifierUsingStatePassing']
+        MODIFIERS = ['shop.tests.cart_modifiers.CartModifierUsingStatePassing']
         with SettingsOverride(SHOP_CART_MODIFIERS=MODIFIERS):
             self.cart.add_product(self.product)
             self.cart.save()
@@ -100,6 +103,7 @@ class CartModifiersTestCase(TestCase):
 
 
 class TenPercentPerItemTaxModifierTestCase(TestCase):
+    modifier_name = 'ten_percent_per_item'
 
     class MockItem(object):
         """ A simple mock object to assert the tax modifier works properly"""
@@ -111,14 +115,14 @@ class TenPercentPerItemTaxModifierTestCase(TestCase):
     def test_tax_amount_is_correct(self):
         modifier = TenPercentPerItemTaxModifier()
         item = self.MockItem()
-        field = modifier.get_extra_cart_item_line(item)
-        self.assertTrue(field.value == Decimal('10'))
+        line = modifier.get_extra_cart_item_line(item, {})
+        self.assertTrue(line.value == Decimal('10'))
 
     def test_tax_amount_is_correct_after_modifier(self):
         modifier = TenPercentPerItemTaxModifier()
         item = self.MockItem()
         previous_option = ExtraEntryLine(label='Some option', value=Decimal('10'))
         item.extra_entry_lines['test'] = previous_option
-        item.current_total = item.current_total + previous_option[1]
-        field = modifier.get_extra_cart_item_line(item)
-        self.assertTrue(field.value == Decimal('11'))
+        item.current_total = item.current_total + previous_option.value
+        line = modifier.get_extra_cart_item_line(item, {})
+        self.assertTrue(line.value == Decimal('11'))

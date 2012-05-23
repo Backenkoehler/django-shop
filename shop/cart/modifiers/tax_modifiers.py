@@ -15,7 +15,7 @@ class TenPercentGlobalTaxModifier(BaseCartModifier):
     modifier_name = 'ten_percent_global_tax'
     TAX_PERCENTAGE = Decimal('10')
 
-    def get_extra_cart_line(self, cart):
+    def get_extra_cart_line(self, cart, state):
         """
         Add a field on cart.extra_entry_line:
         """
@@ -35,7 +35,7 @@ class TenPercentPerItemTaxModifier(BaseCartModifier):
     modifier_name = 'ten_percent_per_item_tax'
     TAX_PERCENTAGE = Decimal("10")
 
-    def get_extra_cart_item_price_field(self, cart_item):
+    def get_extra_cart_item_line(self, cart_item, state):
         tax_amount = (self.TAX_PERCENTAGE / 100) * cart_item.current_total
 
         return ExtraEntryLine(label='Taxes (10%)', value=tax_amount)
