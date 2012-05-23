@@ -61,6 +61,8 @@ class ExtraOrderLine(models.Model):
     label = models.CharField(max_length=255, verbose_name=_('Label'))
     value = CurrencyField(verbose_name=_('Amount'))
     data = JSONField(null=True, blank=True, verbose_name=_('Serialized extra data'))
+    modifier = models.CharField(max_length=255, verbose_name=_('Modifier'),
+        help_text=_('The cart modifier responsible for this entry'))
     # Does this represent shipping costs?
     is_shipping = models.BooleanField(default=False, editable=False,
             verbose_name=_('Is shipping'))
@@ -80,6 +82,8 @@ class ExtraOrderItemLine(models.Model):
     label = models.CharField(max_length=255, verbose_name=_('Label'))
     value = CurrencyField(verbose_name=_('Amount'))
     data = JSONField(null=True, blank=True, verbose_name=_('Serialized extra data'))
+    modifier = models.CharField(max_length=255, verbose_name=_('Modifier'),
+        help_text=_('The cart modifier responsible for this entry'))
 
     class Meta(object):
         app_label = 'shop'

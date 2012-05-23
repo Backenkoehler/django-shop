@@ -105,7 +105,7 @@ class OrderManager(models.Manager):
             eoi.label = unicode(extra_entry.label)
             eoi.value = extra_entry.value
             eoi.data = extra_entry.data
-            # TODO: add modifier_name
+            eoi.modifier = modifier_name
             eoi.save()
 
         # There, now move on to the order items.
@@ -132,7 +132,7 @@ class OrderManager(models.Manager):
                 eoi.label = unicode(extra_entry.label)
                 eoi.value = extra_entry.value
                 eoi.data = extra_entry.data
-                # TODO: add modifier_name
+                eoi.modifier = modifier_name
                 eoi.save()
 
         processing.send(self.model, order=order, cart=cart)
