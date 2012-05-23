@@ -346,9 +346,9 @@ class BaseOrder(models.Model):
 
     @property
     def shipping_costs(self):
-        from shop.models import ExtraOrderPriceField
+        from shop.models import ExtraOrderLine
         sum_ = Decimal('0.0')
-        cost_list = ExtraOrderPriceField.objects.filter(order=self).filter(
+        cost_list = ExtraOrderLine.objects.filter(order=self).filter(
                 is_shipping=True)
         for cost in cost_list:
             sum_ += cost.value

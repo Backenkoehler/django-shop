@@ -6,7 +6,7 @@ from django.test.testcases import TestCase
 from shop.cart.modifiers_pool import cart_modifiers_pool
 from shop.models.cartmodel import Cart, CartItem
 from shop.addressmodel.models import Address, Country
-from shop.models.ordermodel import Order, OrderItem, ExtraOrderPriceField, \
+from shop.models.ordermodel import Order, OrderItem, ExtraOrderLine, \
     OrderPayment
 from shop.models.productmodel import Product
 from shop.tests.util import Mock
@@ -265,7 +265,7 @@ class OrderConversionTestCase(TestCase):
             # Assert that there are as many extra_cart_price_fields than there
             # are extra order price fields
             e_cart_fields = self.cart.extra_entry_lines
-            e_order_fields = ExtraOrderPriceField.objects.filter(order=o)
+            e_order_fields = ExtraOrderLine.objects.filter(order=o)
             self.assertEqual(len(e_cart_fields), len(e_order_fields))
 
             # Check that totals match

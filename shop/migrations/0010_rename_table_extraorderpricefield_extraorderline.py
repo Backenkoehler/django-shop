@@ -7,20 +7,14 @@ from django.db import models
 class Migration(SchemaMigration):
 
     def forwards(self, orm):
-        # Adding field 'ExtraOrderLine.data'
-        db.add_column('shop_extraorderitempricefield', 'data', self.gf('jsonfield.fields.JSONField')(null=True, blank=True), keep_default=False)
-
-        # Adding field 'ExtraOrderItemLine.data'
-        db.add_column('shop_extraorderpricefield', 'data', self.gf('jsonfield.fields.JSONField')(null=True, blank=True), keep_default=False)
+        # Rename tables extraorder(item)pricefield -> shop_extraorder(item)line
+        db.rename_table('shop_extraorderitempricefield', 'shop_extraorderitemline')
+        db.rename_table('shop_extraorderpricefield', 'shop_extraorderline')
 
     def backwards(self, orm):
-        
-        # Deleting field 'ExtraOrderLine.data'
-        db.delete_column('shop_extraorderpricefield', 'data')
-
-        # Deleting field 'ExtraOrderItemLine.data'
-        db.delete_column('shop_extraorderitempricefield', 'data')
-
+        # Rename tables extraorder(item)pricefield -> shop_extraorder(item)line
+        db.rename_table('shop_extraorderitemline', 'shop_extraorderitempricefield')
+        db.rename_table('shop_extraorderline', 'shop_extraorderpricefield')
 
     models = {
         'auth.group': {
@@ -75,20 +69,22 @@ class Migration(SchemaMigration):
             'variation': ('jsonfield.fields.JSONField', [], {'null': 'True', 'blank': 'True'}),
             'variation_hash': ('django.db.models.fields.CharField', [], {'max_length': '64', 'null': 'True'})
         },
-        'shop.extraorderitempricefield': {
-            'Meta': {'object_name': 'ExtraOrderItemPriceField'},
+        'shop.extraorderitemline': {
+            'Meta': {'object_name': 'ExtraOrderItemLine'},
             'data': ('jsonfield.fields.JSONField', [], {'null': 'True', 'blank': 'True'}),
             'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'label': ('django.db.models.fields.CharField', [], {'max_length': '255'}),
+            'modifier': ('django.db.models.fields.CharField', [], {'max_length': '255'}),
             'order_item': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['shop.OrderItem']"}),
             'value': ('django.db.models.fields.DecimalField', [], {'default': "'0.00'", 'max_digits': '12', 'decimal_places': '2'})
         },
-        'shop.extraorderpricefield': {
-            'Meta': {'object_name': 'ExtraOrderPriceField'},
+        'shop.extraorderline': {
+            'Meta': {'object_name': 'ExtraOrderLine'},
             'data': ('jsonfield.fields.JSONField', [], {'null': 'True', 'blank': 'True'}),
             'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'is_shipping': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
             'label': ('django.db.models.fields.CharField', [], {'max_length': '255'}),
+            'modifier': ('django.db.models.fields.CharField', [], {'max_length': '255'}),
             'order': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['shop.Order']"}),
             'value': ('django.db.models.fields.DecimalField', [], {'default': "'0.00'", 'max_digits': '12', 'decimal_places': '2'})
         },

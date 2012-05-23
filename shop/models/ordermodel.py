@@ -52,7 +52,7 @@ class OrderExtraInfo(models.Model):
         verbose_name_plural = _('Order extra info')
 
 
-class ExtraOrderPriceField(models.Model):
+class ExtraOrderLine(models.Model):
     """
     This will make Cart-provided extra price fields persistent since we want
     to "snapshot" their statuses at the time when the order was made
@@ -71,7 +71,7 @@ class ExtraOrderPriceField(models.Model):
         verbose_name_plural = _('Extra order price fields')
 
 
-class ExtraOrderItemPriceField(models.Model):
+class ExtraOrderItemLine(models.Model):
     """
     This will make Cart-provided extra price fields persistent since we want
     to "snapshot" their statuses at the time when the order was made

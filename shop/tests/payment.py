@@ -10,8 +10,8 @@ from django.test.testcases import TestCase
 from shop.backends_pool import backends_pool
 from shop.addressmodel.models import Address, Country
 from shop.models.ordermodel import (
-    ExtraOrderItemPriceField,
-    ExtraOrderPriceField,
+    ExtraOrderItemLine,
+    ExtraOrderLine,
     Order,
     OrderItem,
 )
@@ -174,13 +174,13 @@ class PayOnDeliveryTestCase(TestCase):
         self.orderitem.line_total = Decimal('110')
         self.orderitem.save()
 
-        eoif = ExtraOrderItemPriceField()
+        eoif = ExtraOrderItemLine()
         eoif.order_item = self.orderitem
         eoif.label = 'Fake extra field'
         eoif.value = Decimal("10")
         eoif.save()
 
-        eof = ExtraOrderPriceField()
+        eof = ExtraOrderLine()
         eof.order = self.order
         eof.label = "Fake Taxes"
         eof.value = Decimal("10")

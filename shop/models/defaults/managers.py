@@ -83,8 +83,8 @@ class OrderManager(models.Manager):
         """
         # must be imported here!
         from shop.models.ordermodel import (
-            ExtraOrderItemPriceField,
-            ExtraOrderPriceField,
+            ExtraOrderItemLine,
+            ExtraOrderLine,
             OrderItem,
         )
         from shop.models.cartmodel import CartItem
@@ -100,7 +100,7 @@ class OrderManager(models.Manager):
 
         # Let's serialize all the extra price arguments in DB
         for modifier_name, extra_entry in cart.extra_entry_lines.iteritems():
-            eoi = ExtraOrderPriceField()
+            eoi = ExtraOrderLine()
             eoi.order = order
             eoi.label = unicode(extra_entry.label)
             eoi.value = extra_entry.value
@@ -126,7 +126,7 @@ class OrderManager(models.Manager):
             order_item.save()
             # For each order item, we save the extra_entry_lines to DB
             for modifier_name, extra_entry in item.extra_entry_lines.iteritems():
-                eoi = ExtraOrderItemPriceField()
+                eoi = ExtraOrderItemLine()
                 eoi.order_item = order_item
                 # Force unicode, in case it has àö...
                 eoi.label = unicode(extra_entry.label)
