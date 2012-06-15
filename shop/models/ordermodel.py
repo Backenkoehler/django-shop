@@ -94,7 +94,7 @@ class ExtraOrderItemLine(models.Model):
 class OrderPayment(models.Model):
     """
     A class to hold basic payment information. Backends should define their own
-    more complex payment types should they need to store more informtion
+    more complex payment types should they need to store more information
     """
     order = models.ForeignKey(Order, verbose_name=_('Order'))
     # How much was payed with this particular transfer
