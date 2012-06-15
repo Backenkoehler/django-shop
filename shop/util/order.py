@@ -10,23 +10,21 @@ def get_order_from_request(request):
     user or session mode) if any.
     """
     order = None
-    if request.user and not isinstance(request.user, AnonymousUser):
-        # There is a logged in user
+    session = getattr(request, 'session')
+    if session:
+        # There is a session
+        order_id = session.get('order_id')
+        if order_id:
+            order = Order.objects.get(pk=order_id)
+    if not order and request.user \
+        and not isinstance(request.user, AnonymousUser):
+        # No order has been found. Maybe a pending order is stored for the
+        # current logged in user, so use that.
         orders = Order.objects.filter(user=request.user)
-        orders = orders.filter(status__lt=Order.COMPLETED)
+        orders = orders.filter(status__le=Order.COMPLETED)
         orders = orders.order_by('-created')
         if len(orders) >= 1:  # The queryset returns a list
             order = orders[0]
-        else:
-            # There is a logged in user but he has no pending order
-            order = None
-    else:
-        session = getattr(request, 'session', None)
-        if session != None:
-            # There is a session
-            order_id = session.get('order_id')
-            if order_id:
-                order = Order.objects.get(pk=order_id)
     return order
 
 
@@ -35,15 +33,16 @@ def add_order_to_request(request, order):
     Checks that the order is linked to the current user or adds the order to
     the session should there be no logged in user.
     """
+    # Add the order_id to the session There has to be a session. Otherwise
+    # it's fine to get an AttributeError
+    request.session['order_id'] = order.id
+    # Additionally add the order to the user, so that if the session expires
+    # a registered user may access pending orders
     if request.user and not isinstance(request.user, AnonymousUser):
         # We should check that the current user is indeed the request's user.
         if order.user != request.user:
             order.user = request.user
             order.save()
-    else:
-        # Add the order_id to the session There has to be a session. Otherwise
-        # it's fine to get an AttributeError
-        request.session['order_id'] = order.id
 
 def copy_order_item_to_cart(request, order, item_id):
     """
