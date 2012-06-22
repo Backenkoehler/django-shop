@@ -21,7 +21,7 @@ def get_order_from_request(request):
         # No order has been found. Maybe a pending order is stored for the
         # current logged in user, so use that.
         orders = Order.objects.filter(user=request.user)
-        orders = orders.filter(status__le=Order.COMPLETED)
+        orders = orders.filter(status__lte=Order.COMPLETED)
         orders = orders.order_by('-created')
         if len(orders) >= 1:  # The queryset returns a list
             order = orders[0]
