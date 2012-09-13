@@ -97,14 +97,14 @@ class OrderPayment(models.Model):
     more complex payment types should they need to store more information
     """
     order = models.ForeignKey(Order, verbose_name=_('Order'))
-    # How much was payed with this particular transfer
+    # How much was paid with this particular transfer
     amount = CurrencyField(verbose_name=_('Amount'))
     transaction_id = models.CharField(max_length=255,
             verbose_name=_('Transaction ID'),
             help_text=_("The transaction processor's reference"))
     payment_method = models.CharField(max_length=255,
             verbose_name=_('Payment method'),
-            help_text=_("The payment backend use to process the purchase"))
+            help_text=_("The payment backend used to process the purchase"))
 
     class Meta(object):
         app_label = 'shop'

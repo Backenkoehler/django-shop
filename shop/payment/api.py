@@ -7,7 +7,6 @@ new payment module or willing to use modules with another shop system.
 from decimal import Decimal
 from shop.models.ordermodel import OrderPayment
 from shop.models.ordermodel import Order
-from shop.models.cartmodel import Cart
 from shop.shop_api import ShopAPI
 from shop.order_signals import completed
 from django.core.urlresolvers import reverse
@@ -15,10 +14,10 @@ from django.core.urlresolvers import reverse
 class PaymentAPI(ShopAPI):
     """
     This object's purpose is to expose an API to the shop system.
-    Ideally, shops (Django shop or others) should implement this API, so that
+    Ideally, shops (django SHOP or others) should implement this API, so that
     payment plugins are interchangeable between systems.
 
-    This implementation is the interface reference for Django Shop
+    This implementation is the interface reference for django SHOP
 
     Don't forget that since plenty of methods are common to both ShopPaymentAPI
     and ShopShippingAPI(), they are defined in the ShopAPI base class!
@@ -31,7 +30,7 @@ class PaymentAPI(ShopAPI):
     def confirm_payment(self, order, amount, transaction_id, payment_method,
                         save=True):
         """
-        Marks the specified amount for the given order as payed.
+        Marks the specified amount for the given order as paid.
         This allows to hook in more complex behaviors (like saving a history
         of payments in a Payment model)
         The optional save argument allows backends to explicitly not save the
@@ -39,21 +38,16 @@ class PaymentAPI(ShopAPI):
         """
         OrderPayment.objects.create(
             order=order,
-            # How much was payed with this particular transfer
+            # How much was paid with this particular transfer
             amount=Decimal(amount),
             transaction_id=transaction_id,
             payment_method=payment_method)
         
-        if save and self.is_order_payed(order):
+        if save and self.is_order_paid(order):
             # Set the order status:
             order.status = Order.COMPLETED
             order.save()
             completed.send(sender=self, order=order)
-    
-            # Empty the customers basket, to reflect that the purchase was
-            # completed
-            cart_object = Cart.objects.get(user=order.user)
-            cart_object.empty()
 
 
     #==========================================================================

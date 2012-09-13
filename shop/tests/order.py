@@ -140,8 +140,11 @@ class OrderTestCase(TestCase):
         ret = self.order.is_completed()
         self.assertNotEqual(ret, Order.COMPLETED)
 
-    def test_is_payed_works(self):
+    def test_is_paid_works(self):
+        # Ensure deprecated method still works
         ret = self.order.is_payed()
+        self.assertEqual(ret, False)
+        ret = self.order.is_paid()
         self.assertEqual(ret, False)
 
 
@@ -305,6 +308,16 @@ class OrderConversionTestCase(TestCase):
         oi = OrderItem.objects.filter(order=o)[0]
         self.assertEqual(oi.unit_price, baseproduct.unit_price)
 
+    def test_create_from_cart_respects_get_product_reference(self):
+        self.cart.add_product(self.product)
+        self.cart.update()
+        self.cart.save()
+
+        o = Order.objects.create_from_cart(self.cart)
+        oi = OrderItem.objects.filter(order=o)[0]
+        self.assertEqual(oi.product_reference, self.product.get_product_reference())
+
+
 class OrderPaymentTestCase(TestCase):
 
     def setUp(self):
@@ -325,7 +338,8 @@ class OrderPaymentTestCase(TestCase):
         self.order.save()
 
     def test_payment_sum_works(self):
-        self.assertEqual(self.order.amount_payed, Decimal('-1'))
+        self.assertEqual(self.order.amount_payed, 0)
+        self.assertEqual(self.order.amount_paid, 0)
 
     def test_payment_sum_works_with_partial_payments(self):
         OrderPayment.objects.create(
@@ -335,6 +349,8 @@ class OrderPaymentTestCase(TestCase):
                 payment_method='test method')
         self.assertEqual(self.order.amount_payed, 2)
         self.assertEqual(self.order.is_payed(), False)
+        self.assertEqual(self.order.amount_paid, 2)
+        self.assertEqual(self.order.is_paid(), False)
 
     def test_payment_sum_works_with_full_payments(self):
         OrderPayment.objects.create(
@@ -344,3 +360,5 @@ class OrderPaymentTestCase(TestCase):
                 payment_method='test method')
         self.assertEqual(self.order.amount_payed, 10)
         self.assertEqual(self.order.is_payed(), True)
+        self.assertEqual(self.order.amount_paid, 10)
+        self.assertEqual(self.order.is_paid(), True)
