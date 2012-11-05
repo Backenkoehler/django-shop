@@ -36,7 +36,7 @@ class OrderDetailView(ShopDetailView):
 
     def post(self, request, *args, **kwargs):
         order = self.get_object()
-        if request.POST.has_key('copy_item_to_cart'):
+        if 'copy_item_to_cart' in request.POST:
             copy_order_item_to_cart(request, order,
                                     int(request.POST['copy_item_to_cart']))
         return redirect(order)
