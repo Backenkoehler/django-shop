@@ -4,10 +4,12 @@ Version NEXT
 * models.FloatField are now automatically localized.
 * Support for Django 1.2 dropped.
 * Product model now has property ``can_be_added_to_cart`` which is checked before adding the product to cart
-
 * Cart modifiers can add an optional ``data`` field beside ``label`` and ``value``
   for both, the ExtraOrderPriceField and the ExtraOrderItemPriceField model.
   This extra ``data`` field can contain anything serializable as JSON.
+* In cart_modifiers methods ``get_extra_cart_price_field`` and ``get_extra_cart_item_price_field``
+  accepts the additional field ``state`` to pass customized data from ``Cart.update()``
+  down to these methods.
 
 Version 0.1.2
 =============
