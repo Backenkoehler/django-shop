@@ -8,8 +8,17 @@ Version NEXT
   for both, the ExtraOrderPriceField and the ExtraOrderItemPriceField model.
   This extra ``data`` field can contain anything serializable as JSON.
 * In cart_modifiers methods ``get_extra_cart_price_field`` and ``get_extra_cart_item_price_field``
-  accepts the additional field ``state`` to pass customized data from ``Cart.update()``
-  down to these methods.
+  accepts the additional object ``request`` which can be used to calculate the price
+  according to the state of a session, the IP-address or whatever might be useful.
+  Note for backwards compatibility: Until version 0.1.2, instead of the ``request``
+  object, an empty Python dictionary named ``state`` was passed into the cart
+  modifiers. This ``state`` object could contain arbitrary data to exchange information
+  between the cart modifiers. This Python dict now is a temporary attribute of the
+  ``request`` object named ``cart_modifier_state``. Use it instead of the
+  ``state`` object.
+* Cart modifiers can add an optional ``data`` field beside ``label`` and ``value``
+  for both, the ExtraOrderPriceField and the ExtraOrderItemPriceField model.
+  This extra ``data`` field can contain anything serializable as JSON.
 
 Version 0.1.2
 =============
